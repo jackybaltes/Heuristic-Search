@@ -1,0 +1,1354 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Heuristic Search</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/ntnuerc.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+        <script src="https://daybrush.com/scenejs/release/latest/dist/scene.min.js"></script>
+		
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+        <script src="js/ntnu.js"></script>
+    </head>
+    <body>
+        <div class="reveal">
+        <div class="slides">
+            
+<section id="start" data-state="start">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Heuristic Search</h1>
+
+<p>
+      Jacky Baltes<br>
+      National Taiwan Normal University<br>
+      Taipei, Taiwan<br>
+      <a href="mailto:jacky.baltes@ntnu.edu.tw">jacky.baltes@ntnu.edu.tw</a><br>
+</p>
+
+<class 'datetime.date'>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-c2619d38-881d-445b-93fd-e58551b621e5" ><span id="id-c2619d38-881d-445b-93fd-e58551b621e5"><img id="img-id-c2619d38-881d-445b-93fd-e58551b621e5"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-d7051343-e7bb-4bb4-a851-d2b703bac0ee" ><span id="id-d7051343-e7bb-4bb4-a851-d2b703bac0ee"><img id="img-id-d7051343-e7bb-4bb4-a851-d2b703bac0ee" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00003_frag_00001" data-state="slide_00003_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Uniformed Search Methods</h1>
+
+<div class="jb-text">
+<ul>
+<li>So far, we considered depth first search (DFS), breadth first search (BFS), and
+hill climbing (HC) as well as iterative deepening depth first search (IDDFS).</li>
+<li>All of these are uninformed search algorithms, because they do not 
+use any information about the domain (domain knowledge).</li>
+<li>Only need a state representation, an is_valid function, an is_goal function, and a 
+successor function (to create the children)</li> 
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-526bde5f-5cd7-4bc6-b521-2f84dafe6959" ><span id="id-526bde5f-5cd7-4bc6-b521-2f84dafe6959"><img id="img-id-526bde5f-5cd7-4bc6-b521-2f84dafe6959"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-9c54f3e5-d8fc-40b3-aecf-2432303d3af4" ><span id="id-9c54f3e5-d8fc-40b3-aecf-2432303d3af4"><img id="img-id-9c54f3e5-d8fc-40b3-aecf-2432303d3af4" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00004_frag_00001" data-state="slide_00004_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Uniformed Search Methods</h1>
+
+<div class="jb-text">
+<ul>
+<li>Those algorithms are limited to small problems.</li>
+</li>
+<li>Most problems that we want to solve are more complicated than that.</li>
+<li>Problem is the combinatorial explosion</li>
+<ul>
+<li>Chess (after 40 moves), \( 10^{120} \) different positions</li>
+<li>Go \( 10^{800} \) possible board positons</li>
+<li>Real world/robotics are even more complex. Consider all the states that robot
+may be in after 10 minutes. Few of the states we expect to occur</li>
+</ul> 
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-9d4051de-7dcb-4ad3-adbd-5687c4491641" ><span id="id-9d4051de-7dcb-4ad3-adbd-5687c4491641"><img id="img-id-9d4051de-7dcb-4ad3-adbd-5687c4491641"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-fb868acb-e960-43e6-a783-9b418f83a8f1" ><span id="id-fb868acb-e960-43e6-a783-9b418f83a8f1"><img id="img-id-fb868acb-e960-43e6-a783-9b418f83a8f1" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00005_frag_00001" data-state="slide_00005_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Using Domain Knowledge</h1>
+
+<div class="jb-text">
+<ul>
+<li>We know states are good or are likely to occur</li>
+</li>
+<li>A vast state space is not necessarily a problem</li>
+<li>Think about a navigation problem</li>
+<ul>
+<li></li>
+</ul> 
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-cb42973e-be50-4188-a9e0-099fd85330f2" ><span id="id-cb42973e-be50-4188-a9e0-099fd85330f2"><img id="img-id-cb42973e-be50-4188-a9e0-099fd85330f2"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-7c619599-6e8b-4dbb-8041-9af8c5ad4ec8" ><span id="id-7c619599-6e8b-4dbb-8041-9af8c5ad4ec8"><img id="img-id-7c619599-6e8b-4dbb-8041-9af8c5ad4ec8" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00006_frag_00001" data-state="slide_00006_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Robot Navigation Domain</h1>
+
+<span id="id-d72a4949-81b7-4491-91ab-186d52c803fa" ><span id="id-d72a4949-81b7-4491-91ab-186d52c803fa"><img id="img-id-d72a4949-81b7-4491-91ab-186d52c803fa"     src="assets/images/n1.svg"/></span>
+</span>
+
+
+<div class="jb-text">
+<ul>
+<li>Robot can move one cell up, down, left or right</li>
+<li>Robot has to enter one of the green goal cells</li>
+<li>Blue cells are obstacles</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-6daae9e0-650b-46a5-9cfb-5c60a708502a" ><span id="id-6daae9e0-650b-46a5-9cfb-5c60a708502a"><img id="img-id-6daae9e0-650b-46a5-9cfb-5c60a708502a"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-cf2ec4a1-692a-4e8e-abe7-0791af160086" ><span id="id-cf2ec4a1-692a-4e8e-abe7-0791af160086"><img id="img-id-cf2ec4a1-692a-4e8e-abe7-0791af160086" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00007_frag_00001" data-state="slide_00007_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Robot Navigation Domain as Search Problem</h1>
+
+<div class="jb-text">
+<ul>
+<li>Maximum branching factor: 4 (actions up, down, left, and right)</li>
+<li>Depth of the search space: distance between the current state and the closest goal state</li>
+<li>Minimum would be \( abs(x_R - x_G) + abs(y_R - y_G) \), where G is the closest goal
+to the robot</li>
+<li>This distance is called the Manhatten distance</li>
+<li>If the robot can also move on the diagonals (up right, up left, down right, down left),
+then the maximum branching factor would change to 8 and the distance to the goal
+would be smaller</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-e4e2159b-9ddb-46b7-a1ef-428d5ecd305b" ><span id="id-e4e2159b-9ddb-46b7-a1ef-428d5ecd305b"><img id="img-id-e4e2159b-9ddb-46b7-a1ef-428d5ecd305b"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-e48cd5b9-7938-4b96-870b-226161a7c338" ><span id="id-e48cd5b9-7938-4b96-870b-226161a7c338"><img id="img-id-e48cd5b9-7938-4b96-870b-226161a7c338" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00008_frag_00001" data-state="slide_00008_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Robot Navigation</h1>
+
+<div class="jb-text">
+<ul>
+<li>For the state shown in the figure above, we would estimate the
+search complexity to be \( 4^{16} \) = 4294967296</li>
+<li>However, just a large search space is not necessarily a problem</li>
+<li>For example, if there are no obstacles in the path</li>
+<li>In this case, the robot can just keep moving toward the goal</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-a4b1c50c-8f42-4caf-94f0-cd01ced06ec7" ><span id="id-a4b1c50c-8f42-4caf-94f0-cd01ced06ec7"><img id="img-id-a4b1c50c-8f42-4caf-94f0-cd01ced06ec7"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-07b57d17-273a-446a-8d33-9a0fac7edde0" ><span id="id-07b57d17-273a-446a-8d33-9a0fac7edde0"><img id="img-id-07b57d17-273a-446a-8d33-9a0fac7edde0" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00009_frag_00001" data-state="slide_00009_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Robot Navigation</h1>
+
+
+<span id="id-9784fbcc-bb35-4506-8ebc-d6018e9f088c" ><span id="id-9784fbcc-bb35-4506-8ebc-d6018e9f088c"><img id="img-id-9784fbcc-bb35-4506-8ebc-d6018e9f088c"     src="assets/images/d2.svg"/></span>
+</span>
+
+<div class="jb-text">
+<ul>
+<li>This is a hard problem since any moves towards the goal are
+in the wrong direction</li>
+<li>But most problems are not like this</li>
+<li>Otherwise humans would not be able to make much progress either</li>
+<li>So <b>most of the time</b>, moving in the direction of the goal is a <b>good</b> idea
+</li>
+<li>One of the problems with early AI research was that people focused on puzzles</li>
+<li>but puzzles often work against the ideas that usually work</li>
+<li>Research was heavily biased against common real world problems</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-f5a96849-1c0e-436e-bba3-cc1edf20ff43" ><span id="id-f5a96849-1c0e-436e-bba3-cc1edf20ff43"><img id="img-id-f5a96849-1c0e-436e-bba3-cc1edf20ff43"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-2cbc5e0d-dfd5-4b65-b2ec-c3781b036758" ><span id="id-2cbc5e0d-dfd5-4b65-b2ec-c3781b036758"><img id="img-id-2cbc5e0d-dfd5-4b65-b2ec-c3781b036758" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00010_frag_00001" data-state="slide_00010_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Crossing a Bridge</h1>
+
+<div class="jb-text">
+<ul>
+<li>Tom, Mary, Sue, and John are chased by zombies at night</li>
+<li>They come to a bridge, but only have one flash light and the bridge
+can only support two people</li>
+<li>You cannot throw the flashlight</li>
+<li>The people have different speeds</li>
+<ul>
+<li>Tom can cross the bridge in 1 min</li>
+<li>Mary takes 2 min</li>
+<li>Sue takes 5 min</li>
+<li>John takes 10 min</li>
+</ul>
+<li>What is the minimum time for all people to cross the bridge</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-9b4a6819-f251-4a85-885f-1c4ec20e780b" ><span id="id-9b4a6819-f251-4a85-885f-1c4ec20e780b"><img id="img-id-9b4a6819-f251-4a85-885f-1c4ec20e780b"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-8fce39bc-e0f2-4707-b160-b61d7cfd1dfd" ><span id="id-8fce39bc-e0f2-4707-b160-b61d7cfd1dfd"><img id="img-id-8fce39bc-e0f2-4707-b160-b61d7cfd1dfd" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00011_frag_00001" data-state="slide_00011_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Crossing a Bridge with AI</h1>
+
+<div class="jb-text">
+<ul>
+<li>Maximum branching factor: 4 + (4*3) = 16</li>
+<li>Solution length: 5</li>
+<li>Most people will end up with the following solution:</li>
+<ul>
+<li>Tom and Mary across (2 min)</li>
+<li>Tom goes back with the flashlight (1 min)</li>
+<li>Tom and Sue across (5 min)</li>
+<li>Tom goes back with the flashlight (1 min)</li>
+<li>Tom and John across (10 min)</li>
+<li>Total time: 19 min</li>
+</ul>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-a9a447f4-11e3-41a5-bffc-f27f6df9ed81" ><span id="id-a9a447f4-11e3-41a5-bffc-f27f6df9ed81"><img id="img-id-a9a447f4-11e3-41a5-bffc-f27f6df9ed81"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-364e87c5-2b1b-440e-8451-b6146f69c7ad" ><span id="id-364e87c5-2b1b-440e-8451-b6146f69c7ad"><img id="img-id-364e87c5-2b1b-440e-8451-b6146f69c7ad" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00012_frag_00001" data-state="slide_00012_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Crossing a Bridge Solution</h1>
+
+<div class="jb-text">
+<ul>
+<li>Most people think the best 19 min is the best time</li>
+<li>Assumption is to move the faster runners</li>
+<li>But 19 min is not the best solution</li>
+<li>Puzzle can be done in 17 min</li>
+<ul>
+<li>Tom and Mary across (2 min)</li>
+<li>Tom goes back with the flashlight (1 min)</li>
+<li>John and Sue across (10 min)</li>
+<li>Mary goes back with the flashlight (2 min)</li>
+<li>Tom and Mary across (2 min)</li>
+<li>Total time: 17 min</li>
+</ul>
+<li>In this case, our assumption that having the faster runners move is wrong</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-f126dec6-7c68-4a67-86ca-cbc9db0697d6" ><span id="id-f126dec6-7c68-4a67-86ca-cbc9db0697d6"><img id="img-id-f126dec6-7c68-4a67-86ca-cbc9db0697d6"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-0e8eec8c-2bc0-4a76-bb75-d3b6e79c5dfb" ><span id="id-0e8eec8c-2bc0-4a76-bb75-d3b6e79c5dfb"><img id="img-id-0e8eec8c-2bc0-4a76-bb75-d3b6e79c5dfb" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00013_frag_00001" data-state="slide_00013_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Heuristics</h1>
+
+<div class="jb-text">
+<ul>
+<li>To make sense of the world, humans and other animals use
+rules of thumb</li>
+<li>These rules work most of the time, but not always</li>
+<li>In puzzles, they usually never work</li>
+<li>These rules/assumptions are called <b>heuristics</b></li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-2d6b7f91-9169-493f-907a-5bf428c6a19a" ><span id="id-2d6b7f91-9169-493f-907a-5bf428c6a19a"><img id="img-id-2d6b7f91-9169-493f-907a-5bf428c6a19a"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-9cf6e2fd-78be-44f9-ba4e-a540304e2068" ><span id="id-9cf6e2fd-78be-44f9-ba4e-a540304e2068"><img id="img-id-9cf6e2fd-78be-44f9-ba4e-a540304e2068" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00014_frag_00001" data-state="slide_00014_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Heuristics</h1>
+
+<div class="jb-text">
+<ul>
+<li>Improve uninformed search, then I want to use heuristics to guide the search</li>
+<li>If I want to fly to Paris, then it seems smarter to fly from Taipei to Bangkok
+or Istanbul, instead of San Francisco or New York</li>
+<li>It is possible that the next flight from Bangkok is not for 48 hours, but
+is not what I expect to happen most of the time</li>
+<li>When we use heuristics, we often do not find the optimal solution (e.g,, bridge crossing puzzle),
+but a good enough solution (19 min)</li>
+<li>Human intelligence seldom finds the optimal solutions</li>
+<li>Finding a <b>satisficing</b> solution</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-eb1b47c8-88c7-4d37-a44c-d6b474afaf28" ><span id="id-eb1b47c8-88c7-4d37-a44c-d6b474afaf28"><img id="img-id-eb1b47c8-88c7-4d37-a44c-d6b474afaf28"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-423c7224-3c67-4e23-aec9-e73ec38c13ab" ><span id="id-423c7224-3c67-4e23-aec9-e73ec38c13ab"><img id="img-id-423c7224-3c67-4e23-aec9-e73ec38c13ab" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00015_frag_00001" data-state="slide_00015_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>UofC Coffee Shop Problem</h1>
+
+<span id="id-4c74478d-ac44-4682-b954-000359df51c9" ><span id="id-4c74478d-ac44-4682-b954-000359df51c9"><img id="img-id-4c74478d-ac44-4682-b954-000359df51c9"     src="assets/images/uofc1.svg"/></span>
+</span>
+
+<div class="jb-text">
+<ul>
+<li>To go to lunch from the robotics lab, we always used the red path</li>
+<li>On the way back, we would always use the green path</li>
+<li>Clearly not both of them can be the optimal path</li>
+<li>Both paths were satisficing, in our world</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-028ff332-5c91-4e33-99f0-4b0a8eff5dca" ><span id="id-028ff332-5c91-4e33-99f0-4b0a8eff5dca"><img id="img-id-028ff332-5c91-4e33-99f0-4b0a8eff5dca"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-d66b455d-543e-4706-8071-f5b338dab5dc" ><span id="id-d66b455d-543e-4706-8071-f5b338dab5dc"><img id="img-id-d66b455d-543e-4706-8071-f5b338dab5dc" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00016_frag_00001" data-state="slide_00016_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Satisficing and Heuristics</h1>
+
+<div class="jb-text">
+<ul>
+<li>Satisficing solutions and heuristics to make the problem managable at all</li>
+<li>We prefer finding a non-optimal solution in 1 hr over waiting 1000 years for the
+best solution</li>
+<li>
+<blockquote>
+Of course the decision that is optimal in the simplified model will seldom be 
+optimal in the real world.  The decision maker has a choice between optimal 
+decisions for an imagined simplified world or decisions that are good enough, 
+that satisfice, for a world approximating the complex real one more closely.
+We use heuristic solutions to hard problems not because we prefer less to 
+more but because we have no choice
+</blockquote>
+H. Simon, The Sciences of the Artificial, p 35
+</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-1755c17f-1532-4ced-a3b7-89f915840e9a" ><span id="id-1755c17f-1532-4ced-a3b7-89f915840e9a"><img id="img-id-1755c17f-1532-4ced-a3b7-89f915840e9a"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-e8d03453-9031-4c77-8784-d21a24ad5a43" ><span id="id-e8d03453-9031-4c77-8784-d21a24ad5a43"><img id="img-id-e8d03453-9031-4c77-8784-d21a24ad5a43" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00017_frag_00001" data-state="slide_00017_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Artificial Intelligence and Search</h1>
+
+<div class="jb-text">
+<ul>
+<li>Up to 1985, the mantra of AI research was <b>"Search is the crux of AI"</b></li>
+<li>A lot of research on better and more efficient search algorithms</li>
+<li>The amount of intelligence (smartness) of an algorithm was measured
+by how fast the algorithm could search through nodes</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-f68a17a5-c4c5-42ab-bb7a-f5323919a532" ><span id="id-f68a17a5-c4c5-42ab-bb7a-f5323919a532"><img id="img-id-f68a17a5-c4c5-42ab-bb7a-f5323919a532"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-b390ffb0-a5fe-42bd-bf5f-a328f1b91245" ><span id="id-b390ffb0-a5fe-42bd-bf5f-a328f1b91245"><img id="img-id-b390ffb0-a5fe-42bd-bf5f-a328f1b91245" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00018_frag_00001" data-state="slide_00018_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Artificial Intelligence and Search</h1>
+
+<div class="jb-text">
+<ul>
+<li>
+<blockquote>
+The amount of intelligence in a search strategy is measured  not by the 
+amount of search actually performed, but by the amount that would have 
+been necessary had an intelligent method not been used (i.e. by the 
+amount of search avoided).
+</blockquote>
+Newel and Simon (General Problem Solver)</li>
+<li>After 1985, the mantra of AI research was 
+<b>"<span style="color:red">Avoiding</span> Search is the crux of AI"</b></li>
+<li>Cutting out large parts of the search space</li>
+<li>Focus on the parts that are likely to include a solution</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-ef3e570c-974c-4cad-ba69-5c6b6a48cd59" ><span id="id-ef3e570c-974c-4cad-ba69-5c6b6a48cd59"><img id="img-id-ef3e570c-974c-4cad-ba69-5c6b6a48cd59"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-b33a1a6f-41af-4293-8f90-a33d3847d05d" ><span id="id-b33a1a6f-41af-4293-8f90-a33d3847d05d"><img id="img-id-b33a1a6f-41af-4293-8f90-a33d3847d05d" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00019_frag_00001" data-state="slide_00019_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Artificial Intelligence and Search</h1>
+
+<div class="jb-text">
+<ul>
+<li>
+Computers beat the human world champion in chess (Gary Kasparov, Deep Blue, IBM, 1996) 
+and Go (Lee Sedol, Alpha Go, Google, 2016)
+</li>
+<li>Even before this time, computers would play strong moves most of the time</li>
+<li>But once in a while, they would make a really stupid move</li>
+<li>Against a world champion player, they would then be doomed to loose</li>
+<li>AI is all about <b>never</b> making a really stupid move, rather than trying
+to find the optimal/best move (Jacky Baltes)</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-cd436cd9-9cda-4012-9dea-6579aa10439a" ><span id="id-cd436cd9-9cda-4012-9dea-6579aa10439a"><img id="img-id-cd436cd9-9cda-4012-9dea-6579aa10439a"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-94309bb9-afa9-43dc-9c1a-951f01e19655" ><span id="id-94309bb9-afa9-43dc-9c1a-951f01e19655"><img id="img-id-94309bb9-afa9-43dc-9c1a-951f01e19655" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00020_frag_00001" data-state="slide_00020_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Distance/Cost Functions</h1>
+
+<div class="jb-text">
+<ul>
+<li>Model the kind of knowledge that people use to guide their decisions (heuristics)</li>
+<li><b>Goodness</b> of a state: how likely it is to lead to a solution</li>
+<li>Goodness increases as we move towards the goal, goodness increases</li>
+<li>A state is good if it close to a solution</li>
+<li>Distance/cost to the solution decreases as we move towards the solution</li>
+<li>The amount of work that we have to do is approximately \( b^d \), where \(b \)
+is the average branching factor, and \( d \) is the length of the path to the
+closest solution</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-31b2288a-56d5-426d-8b07-fbab43c87d2e" ><span id="id-31b2288a-56d5-426d-8b07-fbab43c87d2e"><img id="img-id-31b2288a-56d5-426d-8b07-fbab43c87d2e"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-106160c5-b0c8-4621-b97f-9cc947b24abf" ><span id="id-106160c5-b0c8-4621-b97f-9cc947b24abf"><img id="img-id-106160c5-b0c8-4621-b97f-9cc947b24abf" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00021_frag_00001" data-state="slide_00021_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Quality Functions</h1>
+
+<div class="jb-text">
+<ul>
+<li>For some domain, it may be more natural to express goodness of a state
+as an increasing quality or reward function</li>
+<li>For example, if you want to implement a poker playing program, then
+modeling it as the amount of money you expect to win seems more natural than
+a cost function</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-58a5524e-f9d2-4061-9ee7-1fd88cb14eab" ><span id="id-58a5524e-f9d2-4061-9ee7-1fd88cb14eab"><img id="img-id-58a5524e-f9d2-4061-9ee7-1fd88cb14eab"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-c89774ae-d4ef-4fac-b7d5-f2775b3eef0f" ><span id="id-c89774ae-d4ef-4fac-b7d5-f2775b3eef0f"><img id="img-id-c89774ae-d4ef-4fac-b7d5-f2775b3eef0f" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00022_frag_00001" data-state="slide_00022_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Heuristic Functions and Computational Cost</h1>
+
+<div class="jb-text">
+<ul>
+<li>Assumption is that heuristic function can be calculated quickly</li>
+<li>A quick guess about the distance to the goal</li>
+<li>Estimate of how much work it is to extend this node to a solution</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-6bdf1130-1e68-4833-9a45-bb1fd5fce5a5" ><span id="id-6bdf1130-1e68-4833-9a45-bb1fd5fce5a5"><img id="img-id-6bdf1130-1e68-4833-9a45-bb1fd5fce5a5"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-5ccd7506-30ce-4d24-a7f7-7febc44cb23a" ><span id="id-5ccd7506-30ce-4d24-a7f7-7febc44cb23a"><img id="img-id-5ccd7506-30ce-4d24-a7f7-7febc44cb23a" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+        </div>
+        </div>
+
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info about config & dependencies:
+            // - https://github.com/hakimel/reveal.js#configuration
+            // - https://github.com/hakimel/reveal.js#dependencies
+            Reveal.initialize({
+                math: {
+                    mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+                    config: 'TeX-AMS_HTML-full',  // See http://docs.mathjax.org/en/latest/config-files.html
+                    // tex2jax: {
+                    //     inlineMath: [['$', '$'], ['\(', '\)']],
+                    //     displayMath: [['$$', '$$'], ['\[', '\]']],
+                    //     processEscapes: true,
+                    //     processEnvironments: true,
+                    //     skipTags: ['script', 'noscript', 'style', 'textarea', 'code', 'pre'],
+                    //     displayAlign: 'center',
+                    // }                
+                },
+                dependencies: [
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/math/math.js', async: true }
+                ]
+            });
+        </script>
+
+        <script>
+            <!-- Assets -->
+var assets = {
+"robbi" : new JBImage( "robbi", "12677", "162", "138", null, null, "assets/images/robbi", "png" ),
+"logo" : new JBImage( "logo", "12033", "0", "0", null, null, "assets/images/logo", "png" ),
+"fira-logo-1" : new JBImage( "fira-logo-1", "93836", "0", "0", null, null, "assets/images/FIRA-logo-1", "png" ),
+"pairLogo" : new JBImage( "pairLogo", "63051", "0", "0", null, null, "assets/images/pairLogo", "png" ),
+"n1" : new JBImage( "n1", "24898", "0", "0", null, null, "assets/images/n1", "svg" ),
+"d2" : new JBImage( "d2", "28078", "0", "0", null, null, "assets/images/d2", "svg" ),
+"uofc1" : new JBImage( "uofc1", "7698", "0", "0", null, null, "assets/images/uofc1", "svg" ) 
+};
+var assetInstances = {
+    "id-d7051343-e7bb-4bb4-a851-d2b703bac0ee": assets["robbi"],
+    "id-9c54f3e5-d8fc-40b3-aecf-2432303d3af4": assets["robbi"],
+    "id-fb868acb-e960-43e6-a783-9b418f83a8f1": assets["robbi"],
+    "id-7c619599-6e8b-4dbb-8041-9af8c5ad4ec8": assets["robbi"],
+    "id-cf2ec4a1-692a-4e8e-abe7-0791af160086": assets["robbi"],
+    "id-e48cd5b9-7938-4b96-870b-226161a7c338": assets["robbi"],
+    "id-07b57d17-273a-446a-8d33-9a0fac7edde0": assets["robbi"],
+    "id-2cbc5e0d-dfd5-4b65-b2ec-c3781b036758": assets["robbi"],
+    "id-8fce39bc-e0f2-4707-b160-b61d7cfd1dfd": assets["robbi"],
+    "id-364e87c5-2b1b-440e-8451-b6146f69c7ad": assets["robbi"],
+    "id-0e8eec8c-2bc0-4a76-bb75-d3b6e79c5dfb": assets["robbi"],
+    "id-9cf6e2fd-78be-44f9-ba4e-a540304e2068": assets["robbi"],
+    "id-423c7224-3c67-4e23-aec9-e73ec38c13ab": assets["robbi"],
+    "id-d66b455d-543e-4706-8071-f5b338dab5dc": assets["robbi"],
+    "id-e8d03453-9031-4c77-8784-d21a24ad5a43": assets["robbi"],
+    "id-b390ffb0-a5fe-42bd-bf5f-a328f1b91245": assets["robbi"],
+    "id-b33a1a6f-41af-4293-8f90-a33d3847d05d": assets["robbi"],
+    "id-94309bb9-afa9-43dc-9c1a-951f01e19655": assets["robbi"],
+    "id-106160c5-b0c8-4621-b97f-9cc947b24abf": assets["robbi"],
+    "id-c89774ae-d4ef-4fac-b7d5-f2775b3eef0f": assets["robbi"],
+    "id-5ccd7506-30ce-4d24-a7f7-7febc44cb23a": assets["robbi"],
+    "id-c2619d38-881d-445b-93fd-e58551b621e5": assets["logo"],
+    "id-526bde5f-5cd7-4bc6-b521-2f84dafe6959": assets["logo"],
+    "id-9d4051de-7dcb-4ad3-adbd-5687c4491641": assets["logo"],
+    "id-cb42973e-be50-4188-a9e0-099fd85330f2": assets["logo"],
+    "id-6daae9e0-650b-46a5-9cfb-5c60a708502a": assets["logo"],
+    "id-e4e2159b-9ddb-46b7-a1ef-428d5ecd305b": assets["logo"],
+    "id-a4b1c50c-8f42-4caf-94f0-cd01ced06ec7": assets["logo"],
+    "id-f5a96849-1c0e-436e-bba3-cc1edf20ff43": assets["logo"],
+    "id-9b4a6819-f251-4a85-885f-1c4ec20e780b": assets["logo"],
+    "id-a9a447f4-11e3-41a5-bffc-f27f6df9ed81": assets["logo"],
+    "id-f126dec6-7c68-4a67-86ca-cbc9db0697d6": assets["logo"],
+    "id-2d6b7f91-9169-493f-907a-5bf428c6a19a": assets["logo"],
+    "id-eb1b47c8-88c7-4d37-a44c-d6b474afaf28": assets["logo"],
+    "id-028ff332-5c91-4e33-99f0-4b0a8eff5dca": assets["logo"],
+    "id-1755c17f-1532-4ced-a3b7-89f915840e9a": assets["logo"],
+    "id-f68a17a5-c4c5-42ab-bb7a-f5323919a532": assets["logo"],
+    "id-ef3e570c-974c-4cad-ba69-5c6b6a48cd59": assets["logo"],
+    "id-cd436cd9-9cda-4012-9dea-6579aa10439a": assets["logo"],
+    "id-31b2288a-56d5-426d-8b07-fbab43c87d2e": assets["logo"],
+    "id-58a5524e-f9d2-4061-9ee7-1fd88cb14eab": assets["logo"],
+    "id-6bdf1130-1e68-4833-9a45-bb1fd5fce5a5": assets["logo"],
+    "id-d72a4949-81b7-4491-91ab-186d52c803fa": assets["n1"],
+    "id-9784fbcc-bb35-4506-8ebc-d6018e9f088c": assets["d2"],
+    "id-4c74478d-ac44-4682-b954-000359df51c9": assets["uofc1"]
+};
+<!-- End of Assets -->
+
+            convertURLs(assetInstances, "smart-path");
+        </script>
+        <script>
+            <!-- Characters -->
+var characters =
+{};
+<!-- End of Characters -->
+
+        </script>
+    </body>
+</html>
